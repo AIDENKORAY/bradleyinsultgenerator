@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Insult Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    #insult {
+      margin: 30px;
+      font-size: 1.5rem;
+      min-height: 50px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1.2rem;
+      background: crimson;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    button:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>AI Insult Generator</h1>
+  <div id="insult">Click the button... if you dare.</div>
+  <button onclick="generateInsult()">Generate</button>
+
+  <script>
+    const adjectives = [
+      "brain-dead", "discount", "off-brand", "malfunctioning",
+      "confused", "budget", "expired", "low-resolution"
+    ];
+
+    const nouns = [
+      "toaster", "NPC", "traffic cone", "WiFi signal",
+      "potato", "keyboard warrior", "loading screen"
+    ];
+
+    const endings = [
+      "with no updates available.",
+      "running on 1% battery.",
+      "in permanent airplane mode.",
+      "that even autocorrect gave up on."
+    ];
+
+    function generateInsult() {
+      const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const noun = nouns[Math.floor(Math.random() * nouns.length)];
+      const end = endings[Math.floor(Math.random() * endings.length)];
+
+      document.getElementById("insult").innerText =
+        `You're a ${adj} ${noun} ${end}`;
+    }
+  </script>
+
+</body>
+</html>
