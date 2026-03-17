@@ -47,7 +47,7 @@
     async function generateInsult() {
       document.getElementById("insult").innerText = "Cooking something evil...";
 
-      const res = await fetch("/api/insult", {
+      const res = await fetch("https://bradleyinsultgenerator-kp06cgf02-aidenkorays-projects.vercel.app/api/insult", {
         method: "POST"
       });
 
