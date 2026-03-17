@@ -2,34 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Insult Generator</title>
+  <title>AI Insult Generator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
+      font-family: Arial;
+      background: #0f0f0f;
       color: white;
       text-align: center;
-      padding: 50px;
+      padding: 60px;
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
     }
 
     #insult {
-      margin: 30px;
-      font-size: 1.5rem;
-      min-height: 50px;
+      margin: 40px;
+      font-size: 1.6rem;
+      min-height: 60px;
     }
 
     button {
-      padding: 12px 20px;
+      padding: 14px 24px;
       font-size: 1.2rem;
       background: crimson;
       border: none;
       color: white;
+      border-radius: 10px;
       cursor: pointer;
-      border-radius: 8px;
     }
 
     button:hover {
@@ -44,30 +44,15 @@
   <button onclick="generateInsult()">Generate</button>
 
   <script>
-    const adjectives = [
-      "brain-dead", "discount", "off-brand", "malfunctioning",
-      "confused", "budget", "expired", "low-resolution"
-    ];
+    async function generateInsult() {
+      document.getElementById("insult").innerText = "Cooking something evil...";
 
-    const nouns = [
-      "toaster", "NPC", "traffic cone", "WiFi signal",
-      "potato", "keyboard warrior", "loading screen"
-    ];
+      const res = await fetch("/api/insult", {
+        method: "POST"
+      });
 
-    const endings = [
-      "with no updates available.",
-      "running on 1% battery.",
-      "in permanent airplane mode.",
-      "that even autocorrect gave up on."
-    ];
-
-    function generateInsult() {
-      const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-      const noun = nouns[Math.floor(Math.random() * nouns.length)];
-      const end = endings[Math.floor(Math.random() * endings.length)];
-
-      document.getElementById("insult").innerText =
-        `You're a ${adj} ${noun} ${end}`;
+      const data = await res.json();
+      document.getElementById("insult").innerText = data.insult;
     }
   </script>
 
