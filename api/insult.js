@@ -12,8 +12,17 @@ export default async function handler(req, res) {
     const { name, savage, style } = req.body || {};
 
     // 🎯 Build smart prompt
-    const prompt = `
-Generate a ${savage ? "savage" : "funny"} insult.
+const prompt = `
+Generate a ${savage ? "very aggressive, over-the-top, swear-heavy" : "funny"} insult.
+
+${name ? `The insult MUST directly target someone named ${name}. Mention their name clearly.` : ""}
+
+${style ? `Make the insult style: ${style}.` : ""}
+
+${savage ? "Use lots of casual swearing for emphasis, but keep it non-hateful and not targeting protected groups." : ""}
+
+Keep it under 20 words.
+`;
 
 ${name ? `The insult MUST directly target someone named ${name}. Mention their name clearly.` : ""}
 
