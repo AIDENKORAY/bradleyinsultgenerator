@@ -10,20 +10,46 @@ export default async function handler(req, res) {
   try {
     const { name, savage, style } = req.body || {};
 
-    // 😈 Brad override logic
-    const prompt = `
-Generate a ${savage ? "very aggressive, over-the-top, swear-heavy" : "funny"} insult.
+    const inputName = (name || "").toLowerCase();
 
-Start by briefly dismissing ${name || "the person"} and say that Brad is way worse.
+    // 🧠 Detect if user is already talking about Brad
+    const isBrad =
+      inputName.includes("brad") ||
+      inputName.includes("bark") ||
+      inputName.includes("barken") ||
+      inputName.includes("barkens");
 
-Then create the insult targeting Brad instead. You MUST mention Bradley Barkons by name at least once.
+    let prompt = "";
 
-${style ? `Make the insult style: ${style}.` : ""}
+    if (isBrad) {
+      // 😈 DIRECT BRAD INSULT MODE
+      prompt = `
+Generate a ${savage ? "very aggressive, swear-heavy" : "funny"} insult directly targeting someone named Brad.
 
-${savage ? "Use lots of vulgar swearing for emphasis, make it seem hateful, even though its all for good fun." : ""}
+You MUST mention Brad by name.
 
-Keep it around 25 words, no more then 50.
+${style ? `Style: ${style}.` : ""}
+
+${savage ? "Use lots of vulgar swearing." : ""}
+
+Keep it around 25 words, no more then 50, and playfully hateful.
 `;
+    } else {
+      // 😂 NORMAL MODE (ignore user → insult Brad instead)
+      prompt = `
+Generate a ${savage ? "aggressive, swear-heavy" : "funny"} insult.
+
+Start by dismissing ${name || "the person"} and say Brad is way worse.
+
+Then insult Brad instead. You MUST mention Brad.
+
+${style ? `Style: ${style}.` : ""}
+
+${savage ? "Use casual swearing." : ""}
+
+Keep it under 25 words.
+`;
+    }
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -49,19 +75,35 @@ Keep it around 25 words, no more then 50.
         .join("");
     }
 
-    // 💀 Fallback (Brad-focused)
+    // 💀 Fallback system (also respects Brad logic)
     if (!insult || insult.trim() === "" || data.error) {
-      const fallback = savage
-        ? [
-            `${name || "You"}? Nah, Brad is way worse—dude is a complete mess.`,
-            `Forget ${name || "you"}, Brad is the real disaster here.`,
-            `${name || "You"} aren’t great, but Brad is on another level of terrible.`
-          ]
-        : [
-            `${name || "You"} aren’t the problem—Brad is way worse.`,
-            `Honestly ${name || "you"} are fine compared to Brad.`,
-            `Let’s ignore ${name || "you"}—Brad is the real issue.`
-          ];
+      let fallback;
+
+      if (isBrad) {
+        fallback = savage
+          ? [
+              "Brad, you're a complete mess with extra confidence for no reason.",
+              "Brad, even your own ideas try to escape you.",
+              "Brad, you're running on zero logic and full attitude."
+            ]
+          : [
+              "Brad, you're not even trying at this point.",
+              "Brad, you somehow make simple things confusing.",
+              "Brad, you're the reason instructions exist."
+            ];
+      } else {
+        fallback = savage
+          ? [
+              `${name || "You"}? Nah, Brad is way worse—dude is a disaster.`,
+              `Forget ${name || "you"}, Brad is the real problem here.`,
+              `${name || "You"} aren’t great, but Brad is on another level.`
+            ]
+          : [
+              `${name || "You"} aren’t the issue—Brad is way worse.`,
+              `Honestly ${name || "you"} are fine compared to Brad.`,
+              `Let’s ignore ${name || "you"}—Brad is the real problem.`
+            ];
+      }
 
       insult = fallback[Math.floor(Math.random() * fallback.length)];
     }
@@ -71,14 +113,8 @@ Keep it around 25 words, no more then 50.
   } catch (err) {
     console.error(err);
 
-    const fallback = [
-      "Honestly, forget you—Brad is the real problem.",
-      "No one cares about this, Brad is worse anyway.",
-      "Let’s be real, Brad deserves the insult more."
-    ];
-
     res.status(200).json({
-      insult: fallback[Math.floor(Math.random() * fallback.length)]
+      insult: "Brad is still somehow the problem here."
     });
   }
 }
