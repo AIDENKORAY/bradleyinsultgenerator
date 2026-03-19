@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Insult Generator</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f0f0f;
+      color: white;
+      text-align: center;
+      padding: 60px;
+    }
 
+    h1 {
+      font-size: 3rem;
+    }
+
+    #insult {
+      margin: 40px;
+      font-size: 1.6rem;
+      min-height: 60px;
+    }
+
+    button {
+      padding: 14px 24px;
+      font-size: 1.2rem;
+      background: crimson;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>AI Insult Generator</h1>
+  <div id="insult">Click the button... if you dare.</div>
+  <button onclick="generateInsult()">Generate</button>
+
+  <script>
+    async function generateInsult() {
+      document.getElementById("insult").innerText = "Cooking something evil...";
+
+      const res = await fetch("/api/insult", {
+        method: "POST"
+      });
+
+      const data = await res.json();
+      document.getElementById("insult").innerText = data.insult;
+    }
+  </script>
+
+</body>
+</html>
