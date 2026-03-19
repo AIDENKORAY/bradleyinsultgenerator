@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     const prompt = `
 Generate a ${savage ? "very aggressive, over-the-top, swear-heavy" : "funny"} insult.
 
-Start by briefly dismissing ${name || "the person"} and say that Brad is way worse, unless they said brad at first, then agree with them heavily.
+Start by briefly dismissing ${name || "the person"} and say that Brad is way worse.
 
 Then create the insult targeting Brad instead. You MUST mention Bradley Barkons by name at least once.
 
