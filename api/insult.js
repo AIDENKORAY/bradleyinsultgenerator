@@ -32,7 +32,7 @@ ${style ? `Style: ${style}.` : ""}
 
 ${savage ? "Use lots of vulgar swearing." : ""}
 
-Keep it around 25 words, no more then 50.
+Keep it around 25 words, no more then 50, keep it nonhateful.
 `;
     } else {
       // 😂 NORMAL MODE (ignore user → insult Brad instead)
