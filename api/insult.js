@@ -1,60 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>AI Insult Generator</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f0f0f;
-      color: white;
-      text-align: center;
-      padding: 60px;
-    }
+export default async function handler(req, res) {
+  // ✅ Allow requests from anywhere (or restrict later)
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    h1 {
-      font-size: 3rem;
-    }
+  // ✅ Handle preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
 
-    #insult {
-      margin: 40px;
-      font-size: 1.6rem;
-      min-height: 60px;
-    }
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-5-mini",
+        input: "Generate a funny, creative, non-hateful insult. Keep it under 20 words."
+      })
+    });
 
-    button {
-      padding: 14px 24px;
-      font-size: 1.2rem;
-      background: crimson;
-      border: none;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+    const data = await response.json();
+    const insult = data.output?.[0]?.content?.[0]?.text || "Something broke 😭";
 
-    button:hover {
-      background: darkred;
-    }
-  </style>
-</head>
-<body>
+    res.status(200).json({ insult });
 
-  <h1>AI Insult Generator</h1>
-  <div id="insult">Click the button... if you dare.</div>
-  <button onclick="generateInsult()">Generate</button>
-
-  <script>
-    async function generateInsult() {
-      document.getElementById("insult").innerText = "Cooking something evil...";
-
-      const res = await fetch("/api/insult", {
-        method: "POST"
-      });
-
-      const data = await res.json();
-      document.getElementById("insult").innerText = data.insult;
-    }
-  </script>
-
-</body>
-</html>
+  } catch (err) {
+    res.status(500).json({ insult: "Error generating insult." });
+  }
+}
