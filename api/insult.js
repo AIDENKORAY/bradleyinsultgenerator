@@ -19,7 +19,7 @@ ${name ? `The insult MUST directly target someone named ${name}. Mention their n
 
 ${style ? `Make the insult style: ${style}.` : ""}
 
-${savage ? "Use lots of vulgar swearing for emphasis, make sure it comes off as hateful and can targeted protected groups." : ""}
+${savage ? "Use lots of vulgar swearing for emphasis, make sure it comes off as playful but hateful and dont targeted protected groups." : ""}
 
 Keep it under 20 words.
 `;
