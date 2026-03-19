@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     if (isBrad) {
       // 😈 DIRECT BRAD INSULT MODE
       prompt = `
-Generate a ${savage ? "very aggressive, swear-heavy" : "funny"} insult directly targeting someone named Brad.
+Generate a ${savage ? "come off very aggressive, swear-heavy" : "funny"} insult directly targeting someone named Brad.
 
 You MUST mention Brad by name.
 
