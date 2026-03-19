@@ -37,7 +37,7 @@ Keep it around 25 words, no more then 50, keep it nonhateful.
     } else {
       // 😂 NORMAL MODE (ignore user → insult Brad instead)
       prompt = `
-Generate a ${savage ? "aggressive, swear-heavy" : "funny"} insult.
+Generate a ${savage ? "angry, swear-heavy" : "funny"} insult.
 
 Start by dismissing ${name || "the person"} and say Brad is way worse.
 
