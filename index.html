@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Insult Generator</title>
+
   <style>
     body {
       font-family: Arial;
-      background: #0f0f0f;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
       color: white;
       text-align: center;
       padding: 60px;
@@ -14,46 +15,113 @@
 
     h1 {
       font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      margin: 10px;
+      width: 200px;
     }
 
     #insult {
-      margin: 40px;
-      font-size: 1.6rem;
+      margin: 30px;
+      font-size: 1.5rem;
       min-height: 60px;
+      transition: 0.3s;
     }
 
     button {
-      padding: 14px 24px;
-      font-size: 1.2rem;
+      padding: 12px 20px;
+      font-size: 1rem;
+      margin: 5px;
       background: crimson;
       border: none;
       color: white;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
     button:hover {
       background: darkred;
     }
+
+    .secondary {
+      background: #333;
+    }
+
+    .secondary:hover {
+      background: #555;
+    }
+
+    .toggle {
+      margin-top: 10px;
+    }
   </style>
 </head>
+
 <body>
 
-  <h1>AI Insult Generator</h1>
-  <div id="insult">Click the button... if you dare.</div>
+  <h1>AI Insult Generator 😈</h1>
+
+  <input id="nameInput" placeholder="Enter a name (optional)" />
+
+  <div class="toggle">
+    <label>
+      <input type="checkbox" id="savageMode">
+      Savage Mode 🔥
+    </label>
+  </div>
+
+  <div id="insult">Click generate… if you dare.</div>
+
   <button onclick="generateInsult()">Generate</button>
+  <button class="secondary" onclick="copyInsult()">Copy</button>
 
   <script>
     async function generateInsult() {
+      const name = document.getElementById("nameInput").value;
+      const savage = document.getElementById("savageMode").checked;
+
       document.getElementById("insult").innerText = "Cooking something evil...";
 
-      const res = await fetch("/api/insult", {
-        method: "POST"
-      });
+      try {
+        const res = await fetch("/api/insult", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, savage })
+        });
 
-      const data = await res.json();
-      document.getElementById("insult").innerText = data.insult;
+        const data = await res.json();
+
+        document.getElementById("insult").innerText = data.insult;
+
+        // 💾 Save last insult
+        localStorage.setItem("lastInsult", data.insult);
+
+      } catch {
+        document.getElementById("insult").innerText = "Something broke 😭";
+      }
     }
+
+    function copyInsult() {
+      const text = document.getElementById("insult").innerText;
+      navigator.clipboard.writeText(text);
+      alert("Copied!");
+    }
+
+    // Load last insult on refresh
+    window.onload = () => {
+      const saved = localStorage.getItem("lastInsult");
+      if (saved) {
+        document.getElementById("insult").innerText = saved;
+      }
+    };
   </script>
 
 </body>
