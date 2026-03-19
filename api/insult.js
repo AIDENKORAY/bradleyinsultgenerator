@@ -30,7 +30,7 @@ You MUST mention Brad by name.
 
 ${style ? `Style: ${style}.` : ""}
 
-${savage ? "Use lots of vulgar swearing." : ""}
+${savage ? "Use lots of vulgar swearing, but keep it light hearted and funny." : ""}
 
 Keep it around 25 words, no more then 50, keep it nonhateful.
 `;
