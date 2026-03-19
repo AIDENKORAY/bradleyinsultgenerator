@@ -19,7 +19,7 @@ ${name ? `The insult MUST directly target someone named ${name}. Mention their n
 
 ${style ? `Make the insult style: ${style}.` : ""}
 
-Keep it under 20 words. Keep it non-hateful but still funny.
+Keep it under 20 words. Keep it hateful but still funny.
 `;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
