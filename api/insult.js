@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Allow requests
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -11,17 +10,19 @@ export default async function handler(req, res) {
   try {
     const { name, savage, style } = req.body || {};
 
-    // 😈 Prompt with savage mode
+    // 😈 Brad override logic
     const prompt = `
 Generate a ${savage ? "very aggressive, over-the-top, swear-heavy" : "funny"} insult.
 
-${name ? `The insult MUST directly target someone named ${name}. Mention their name clearly.` : ""}
+Start by briefly dismissing ${name || "the person"} and say that Brad is way worse.
+
+Then create the insult targeting Brad instead. You MUST mention Bradley Barkons by name at least once.
 
 ${style ? `Make the insult style: ${style}.` : ""}
 
-${savage ? "Use lots of vulgar swearing for emphasis, make sure it comes off as playful but hateful and dont targeted protected groups." : ""}
+${savage ? "Use lots of vulgar swearing for emphasis, make it seem hateful, even though its all for good fun." : ""}
 
-Keep it under 20 words.
+Keep it around 25 words, no more then 50.
 `;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
@@ -38,11 +39,8 @@ Keep it under 20 words.
 
     const data = await response.json();
 
-    console.log("OPENAI RESPONSE:", JSON.stringify(data, null, 2));
-
     let insult = "";
 
-    // ✅ Extract response safely
     if (data.output_text) {
       insult = data.output_text;
     } else if (data.output && Array.isArray(data.output)) {
@@ -51,20 +49,18 @@ Keep it under 20 words.
         .join("");
     }
 
-    // 💥 Fallback if API fails or empty
+    // 💀 Fallback (Brad-focused)
     if (!insult || insult.trim() === "" || data.error) {
       const fallback = savage
         ? [
-            `${name || "You"} are so fucking useless even autocorrect gave up on you.`,
-            `${name || "You"} run on 1% brain power and still lagging.`,
-            `${name || "You"} are the human version of a broken loading screen.`,
-            `${name || "You"} are so damn annoying even silence avoids you.`
+            `${name || "You"}? Nah, Brad is way worse—dude is a complete mess.`,
+            `Forget ${name || "you"}, Brad is the real disaster here.`,
+            `${name || "You"} aren’t great, but Brad is on another level of terrible.`
           ]
         : [
-            `${name || "You"} have the energy of a phone stuck at 1%.`,
-            `${name || "You"} are like a tutorial nobody asked for.`,
-            `${name || "You"} bring lag into real life.`,
-            `${name || "You"} are proof autocorrect gives up sometimes.`
+            `${name || "You"} aren’t the problem—Brad is way worse.`,
+            `Honestly ${name || "you"} are fine compared to Brad.`,
+            `Let’s ignore ${name || "you"}—Brad is the real issue.`
           ];
 
       insult = fallback[Math.floor(Math.random() * fallback.length)];
@@ -73,18 +69,16 @@ Keep it under 20 words.
     res.status(200).json({ insult });
 
   } catch (err) {
-    console.error("ERROR:", err);
+    console.error(err);
 
-    // 💀 Backup fallback (always returns something)
     const fallback = [
-      "You move like a slideshow presentation.",
-      "You're the human version of a loading screen.",
-      "Even your shadow tries to avoid you.",
-      "You have the confidence of someone who skipped the tutorial."
+      "Honestly, forget you—Brad is the real problem.",
+      "No one cares about this, Brad is worse anyway.",
+      "Let’s be real, Brad deserves the insult more."
     ];
 
-    const insult = fallback[Math.floor(Math.random() * fallback.length)];
-
-    res.status(200).json({ insult });
+    res.status(200).json({
+      insult: fallback[Math.floor(Math.random() * fallback.length)]
+    });
   }
 }
