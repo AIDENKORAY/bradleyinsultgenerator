@@ -1,12 +1,4 @@
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -22,20 +14,29 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("FULL RESPONSE:", JSON.stringify(data, null, 2));
+    // 👇 LOG EVERYTHING (we NEED this)
+    console.log("OPENAI RESPONSE:", JSON.stringify(data, null, 2));
 
-    // ✅ BETTER extraction
-    let insult =
-      data.output_text ||
-      data.output?.map(o =>
-        o.content?.map(c => c.text).join("")
-      ).join("") ||
-      "AI had a brain freeze 😭";
+    let insult = "";
+
+    // ✅ Try multiple formats safely
+    if (data.output_text) {
+      insult = data.output_text;
+    } else if (data.output && Array.isArray(data.output)) {
+      insult = data.output
+        .map(o => (o.content || []).map(c => c.text || "").join(""))
+        .join("");
+    }
+
+    // fallback
+    if (!insult || insult.trim() === "") {
+      insult = "AI had a brain freeze 😭";
+    }
 
     res.status(200).json({ insult });
 
   } catch (err) {
-    console.error(err);
+    console.error("ERROR:", err);
     res.status(500).json({ insult: "Error generating insult." });
   }
 }
